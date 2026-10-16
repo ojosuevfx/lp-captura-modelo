@@ -1,0 +1,665 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Página de Captura — Modelo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/lenis@1.3.4/dist/lenis.css">
+<style>
+/* =========================================================
+   TOKENS
+   ========================================================= */
+:root{
+  --bg:#080705;
+  --bg-2:#0f0d08;
+  --gold:#c9a227;
+  --gold-2:#f0cf6b;
+  --gold-soft:rgba(240,200,90,.35);
+  --green:#9dff2e;
+  --green-2:#d2ff3a;
+  --text:#ffffff;
+  --text-2:#c9ccd3;
+  --text-3:#8f94a0;
+  --glass:rgba(26,22,12,.55);
+  --glass-border:rgba(230,195,110,.22);
+  --radius:18px;
+  --container:1120px;
+  --font:"Neue Haas Grotesk Display Pro","Inter",system-ui,-apple-system,"Helvetica Neue",Arial,sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  font-family:var(--font);
+  background:var(--bg);
+  color:var(--text);
+  -webkit-font-smoothing:antialiased;
+  letter-spacing:-.01em;
+  overflow-x:hidden;
+}
+img,svg{display:block}
+a{color:inherit;text-decoration:none}
+b,strong{font-weight:700}
+em,i{font-style:italic}
+.container{width:min(var(--container),100% - 48px);margin-inline:auto}
+.center{text-align:center}
+
+/* =========================================================
+   PLACEHOLDERS (troque pelas imagens reais)
+   ========================================================= */
+.ph{
+  position:relative;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  border:1px dashed rgba(230,195,110,.45);
+  background:
+    repeating-linear-gradient(135deg,rgba(240,200,90,.06) 0 14px,transparent 14px 28px),
+    rgba(26,22,12,.5);
+  color:var(--gold-2);
+  font-size:12px;letter-spacing:.08em;text-transform:uppercase;text-align:center;
+  border-radius:var(--radius);
+  padding:12px;
+}
+.ph small{display:block;font-size:11px;opacity:.7;text-transform:none;letter-spacing:0;margin-top:4px}
+.ph--mark{width:28px;height:28px;border-radius:7px;padding:0;font-size:9px;flex:none}
+
+/* =========================================================
+   FUNDO: feixes de luz azul + letras "BG" fantasma
+   ========================================================= */
+.glow-band{position:absolute;inset-inline:0;height:460px;pointer-events:none;z-index:0;
+  background:
+    radial-gradient(60% 50% at 8% 50%,rgba(240,200,90,.35),transparent 70%),
+    radial-gradient(40% 40% at 92% 40%,rgba(240,200,90,.28),transparent 70%),
+    repeating-linear-gradient(90deg,rgba(240,200,90,.10) 0 2px,transparent 2px 110px);
+  mask-image:linear-gradient(to bottom,transparent,#000 30%,#000 70%,transparent);
+}
+.ghost{position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:0}
+.ghost span{position:absolute;font-weight:800;font-size:700px;line-height:1;color:transparent;
+  -webkit-text-stroke:2px rgba(240,200,90,.07);letter-spacing:-.06em;top:10%}
+.ghost span:first-child{left:-120px}.ghost span:last-child{right:-80px;top:35%}
+section{position:relative;z-index:1}
+
+/* =========================================================
+   LOGO
+   ========================================================= */
+.logo{display:inline-flex;align-items:center;gap:10px;font-size:20px;letter-spacing:-.02em;white-space:nowrap}
+.logo span{font-weight:300}.logo b{font-weight:700}
+
+/* =========================================================
+   BOTÕES
+   ========================================================= */
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:6px;
+  font-family:var(--font);font-size:17px;color:#0b2300;
+  background:linear-gradient(90deg,#8cff2a,#d8ff3c);
+  border:1px solid rgba(255,255,255,.35);
+  border-radius:8px;padding:14px 32px;
+  box-shadow:0 0 0 2px rgba(0,0,0,.35) inset,0 0 26px rgba(170,255,60,.55),0 10px 30px rgba(170,255,60,.25);
+  white-space:nowrap;cursor:pointer;transition:transform .15s,box-shadow .15s;
+}
+.btn em{font-style:italic;font-weight:300}
+.btn b{font-weight:700}
+.btn:hover{transform:translateY(-1px);box-shadow:0 0 36px rgba(170,255,60,.75),0 12px 34px rgba(170,255,60,.3)}
+.btn--sm{font-size:12px;padding:8px 22px;border-radius:7px}
+.btn--lg{font-size:21px;padding:16px 40px}
+.cta-row{display:flex;justify-content:center;margin-top:44px}
+
+/* =========================================================
+   CARD VIDRO (padrão da página)
+   ========================================================= */
+.card{
+  position:relative;
+  background:linear-gradient(180deg,rgba(30,26,14,.75),rgba(18,15,8,.55));
+  border:1px solid var(--glass-border);
+  border-bottom-color:rgba(240,200,90,.6);
+  border-radius:var(--radius);
+  box-shadow:0 18px 50px rgba(0,0,0,.45),0 0 0 1px rgba(0,0,0,.4) inset,0 -1px 30px rgba(240,200,90,.08) inset;
+  backdrop-filter:blur(14px);
+}
+.card--accent::before{ /* barra azul no topo */
+  content:"";position:absolute;left:50%;top:-3px;transform:translateX(-50%);
+  width:96px;height:5px;border-radius:99px;
+  background:linear-gradient(90deg,#c9a227,#f0cf6b);
+  box-shadow:0 0 14px rgba(240,200,90,.9);
+}
+.card--accent-left::before{left:36px;transform:none;width:64px}
+.card--glow::after{ /* brilho inferior */
+  content:"";position:absolute;inset-inline:10%;bottom:-1px;height:60px;pointer-events:none;
+  background:radial-gradient(50% 100% at 50% 100%,rgba(240,200,90,.35),transparent 70%);
+}
+
+/* =========================================================
+   TÍTULOS DE SEÇÃO
+   ========================================================= */
+.sec{padding:120px 0}
+.sec-title{font-size:38px;font-weight:300;line-height:1.15;letter-spacing:-.025em}
+.sec-title b{font-weight:700}
+.sec-title .dim{color:var(--text-2)}
+.sec-sub{font-size:19px;font-weight:300;color:var(--text-2);line-height:1.35;margin-top:12px}
+.sec-sub b{color:#fff;font-weight:700}
+
+/* =========================================================
+   1. NAV
+   ========================================================= */
+.nav{position:relative;z-index:2;border-bottom:1px solid rgba(230,195,110,.15);
+  background:linear-gradient(180deg,rgba(22,18,10,.9),rgba(8,7,5,.7));backdrop-filter:blur(10px)}
+.nav .container{display:flex;align-items:center;justify-content:flex-end;height:64px;gap:24px}
+.countdown{display:flex;align-items:center;gap:14px;font-size:12px;color:var(--text-2);font-weight:300}
+.countdown .digits{display:flex;align-items:flex-start;gap:6px}
+.digit{display:flex;flex-direction:column;align-items:center;gap:3px}
+.digit span{background:#f2f2f2;color:#141006;font-weight:600;font-size:17px;line-height:1;
+  padding:6px 5px;border-radius:4px;min-width:30px;text-align:center;letter-spacing:.02em}
+.digit small{font-size:7px;letter-spacing:.12em;text-transform:uppercase;color:var(--text-3)}
+.countdown .colon{font-size:18px;font-weight:600;line-height:30px;color:#fff}
+
+/* =========================================================
+   2. HERO — fundo inteiro em imagem, textos em HTML
+   ========================================================= */
+.hero{position:relative;overflow:hidden;min-height:640px;display:flex;align-items:center}
+.hero .container{position:relative;z-index:1;display:grid;grid-template-columns:1.05fr 1fr;align-items:center;gap:40px;padding:70px 0}
+.hero-copy{max-width:520px}
+.hero-copy .logo{font-size:17px;margin-bottom:18px}
+.hero h1{font-size:46px;line-height:1.08;font-weight:300;letter-spacing:-.03em;color:var(--text-2)}
+.hero h1 .l1{color:#fff}
+.hero h1 b{color:#fff;font-weight:700}
+.hero p{font-size:17px;line-height:1.35;color:var(--text-2);font-weight:300;margin-top:16px}
+.hero p em{color:#fff;font-weight:300}
+.hero p em b{font-weight:600}
+.hero-meta{list-style:none;margin-top:18px;display:grid;gap:4px;font-size:12px;color:var(--text-3);font-weight:300}
+.hero-meta li{display:flex;align-items:center;gap:6px}
+.hero-meta li .mi{width:13px;height:13px;flex:none;color:var(--text-3);stroke-width:2}
+.hero .btn{margin-top:30px}
+.hero-space{min-height:520px}
+
+/* fundo inteiro (hero e "O que você recebe"): placeholder absoluto atrás do conteúdo */
+.bg-full{position:absolute;inset:0;z-index:0;border-radius:0;border:0;justify-content:flex-start;align-items:flex-end;padding:0}
+.bg-full>span{display:block;max-width:360px;margin:18px;padding:10px 14px;border:1px dashed rgba(230,195,110,.5);border-radius:10px;background:rgba(0,0,0,.45);text-align:left}
+.bg-full--mobile{display:none}
+/* quando a arte estiver pronta:
+   .hero .bg-full--desktop{background:url(hero-desktop.jpg) center/cover no-repeat}
+   .hero .bg-full--mobile{background:url(hero-mobile.jpg) center/cover no-repeat}
+   e apague o <span> de dentro */
+
+/* =========================================================
+   3. MARQUEE
+   ========================================================= */
+.marquee{border-block:1px solid rgba(230,195,110,.2);background:#0f0d08;overflow:hidden;
+  padding:12px 0;font-size:14px;font-weight:300;color:var(--text-2);white-space:nowrap}
+.marquee .track{display:inline-flex;gap:0;animation:mq 30s linear infinite}
+.marquee span{padding:0 10px}
+.marquee span::after{content:"-";margin-left:18px;color:var(--text-3)}
+.marquee b{color:#fff}
+@keyframes mq{to{transform:translateX(-50%)}}
+
+/* =========================================================
+   4. "O anúncio está rodando"
+   ========================================================= */
+.sec-doubt .card{margin:54px auto 0;max-width:820px;padding:70px 64px 64px;
+  display:grid;grid-template-columns:1.05fr 1fr;gap:40px;align-items:center}
+.sec-doubt .big{font-size:36px;line-height:1.12;font-weight:300;letter-spacing:-.03em;color:var(--text-2)}
+.sec-doubt .big b{color:#fff;font-weight:700}
+.sec-doubt .small p{font-size:14px;line-height:1.35;color:var(--text-2);font-weight:300;margin-bottom:16px}
+.sec-doubt .small p b{font-weight:700;color:#fff}
+.sec-doubt .small p:last-child{font-size:18px;margin-bottom:0}
+
+/* =========================================================
+   5. Benefícios (4 cards)
+   ========================================================= */
+.sec-clarity{padding-top:60px}
+.grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:22px;margin-top:70px}
+.feat{padding:48px 20px 34px;min-height:230px}
+.feat .ico{width:26px;height:26px;color:#fff;margin-bottom:14px}
+.feat h3{font-size:18px;font-weight:700;line-height:1.1;letter-spacing:-.02em;margin-bottom:8px}
+.feat p{font-size:13px;line-height:1.35;color:var(--text-3);font-weight:300}
+
+/* =========================================================
+   6. Timeline
+   ========================================================= */
+.timeline{position:relative;max-width:820px;margin:70px auto 0;padding-bottom:40px}
+.timeline::before{content:"";position:absolute;left:50%;top:0;bottom:0;width:1px;background:rgba(255,255,255,.8)}
+.timeline::after{content:"";position:absolute;left:50%;bottom:-2px;width:12px;height:12px;
+  border-right:1px solid #fff;border-bottom:1px solid #fff;transform:translateX(-50%) rotate(45deg)}
+.tl-item{position:relative;width:calc(50% - 60px);padding:44px 28px 30px;margin-bottom:-10px}
+.tl-item:nth-child(odd){margin-right:auto}
+.tl-item:nth-child(even){margin-left:auto}
+.tl-item .ico{width:28px;height:28px;color:#fff;margin-bottom:12px}
+.tl-item h3{font-size:19px;font-weight:700;letter-spacing:-.02em;margin-bottom:8px}
+.tl-item p{font-size:13px;line-height:1.35;color:var(--text-2);font-weight:300}
+.tl-item .node{position:absolute;top:50%;width:14px;height:14px;border-radius:50%;background:var(--gold);
+  border:2px solid #fff;box-shadow:0 0 10px rgba(240,200,90,.9);transform:translateY(-50%)}
+.tl-item:nth-child(odd) .node{right:-67px}
+.tl-item:nth-child(even) .node{left:-67px}
+.tl-item .link{position:absolute;top:50%;height:1px;width:50px;border-top:1px dashed rgba(255,255,255,.35)}
+.tl-item:nth-child(odd) .link{right:-55px}
+.tl-item:nth-child(even) .link{left:-55px}
+
+/* =========================================================
+   7. "Aqui a teoria vira prática"
+   ========================================================= */
+.practice{margin:44px auto 0;max-width:880px;padding:50px 56px;display:grid;grid-template-columns:1fr 1.15fr;gap:40px;align-items:center;border-radius:28px}
+.practice ul{list-style:none;display:grid}
+.practice li{padding:18px 0;border-bottom:1px solid rgba(255,255,255,.35)}
+.practice li:last-child{border-bottom:0}
+.practice h3{font-size:19px;font-weight:700;letter-spacing:-.02em;line-height:1.1;margin-bottom:8px}
+.practice p{font-size:13px;line-height:1.35;color:var(--text-2);font-weight:300}
+.practice .ph{height:360px;border-radius:22px}
+
+/* =========================================================
+   8. Serve / Não serve
+   ========================================================= */
+.fit{display:grid;grid-template-columns:repeat(2,300px);gap:30px;justify-content:center;margin-top:50px}
+.fit-card{border-radius:18px;padding:34px 28px 30px;position:relative;box-shadow:0 20px 50px rgba(0,0,0,.5)}
+.fit-card::before{content:"";position:absolute;left:50%;top:-2px;transform:translateX(-50%);width:80px;height:4px;border-radius:99px;
+  background:linear-gradient(90deg,#c9a227,#f0cf6b);box-shadow:0 0 12px rgba(240,200,90,.8)}
+.fit-card h3{font-size:19px;font-weight:700;text-align:center;line-height:1.1;letter-spacing:-.02em;margin-bottom:22px}
+.fit-card ul{list-style:none;display:grid;gap:12px}
+.fit-card li{text-align:left;display:flex;gap:8px;align-items:flex-start;font-size:14px;line-height:1.3;font-weight:300}
+.fit-card li i{flex:none;width:14px;height:14px;margin-top:2px}
+.fit-card li .li-ico{width:14px;height:14px;stroke-width:2.4}
+.fit--no{background:linear-gradient(180deg,#f3f3f3,#cfd0d2);color:#111}
+.fit--no::before{background:linear-gradient(90deg,#c9a227,#f0cf6b)}
+.fit--yes{background:linear-gradient(180deg,#e2c35a,#b8901c);color:#1a1200}
+
+/* =========================================================
+   9. O que você recebe
+   ========================================================= */
+.receive{display:grid;grid-template-columns:360px 1fr;gap:60px;align-items:center;margin-top:60px}
+.grid-2{display:grid;grid-template-columns:repeat(2,1fr);gap:20px}
+.grid-2 .feat{padding:40px 18px 26px;min-height:200px}
+.grid-2 .feat h3{font-size:16px}
+.grid-2 .feat p{font-size:11px}
+.receive-sec{overflow:hidden}
+.receive-space{min-height:520px}
+
+/* =========================================================
+   11. Promessa
+   ========================================================= */
+.promise{display:grid;grid-template-columns:repeat(3,210px);gap:20px;justify-content:center;margin-top:42px}
+.promise div{background:linear-gradient(180deg,#e2c35a,#b8901c);border:1px solid rgba(255,255,255,.35);
+  border-radius:12px;padding:22px 24px;font-size:14px;line-height:1.3;font-weight:300;text-align:left;color:#1a1200;
+  box-shadow:0 14px 40px rgba(201,162,39,.35)}
+.promise b{font-weight:700}
+
+/* =========================================================
+   12. FAQ
+   ========================================================= */
+.faq{display:grid;grid-template-columns:repeat(2,1fr);gap:0 52px;max-width:780px;margin:50px auto 0}
+.faq details{border-bottom:1px solid rgba(255,255,255,.75);padding:16px 0 10px}
+.faq summary{list-style:none;cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:12px;
+  font-size:13px;font-weight:300;letter-spacing:-.01em}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary .chev{width:16px;height:16px;flex:none;margin-right:4px;transition:transform .2s}
+.faq details[open] summary .chev{transform:rotate(180deg)}
+.faq details p{font-size:13px;color:var(--text-3);font-weight:300;padding:10px 0 6px;line-height:1.4}
+
+/* =========================================================
+   13. FOOTER
+   ========================================================= */
+footer{position:relative;z-index:1;margin-top:90px;padding:34px 0 40px;text-align:center;font-size:12px;font-weight:300;color:var(--text-2);
+  border-top:1px solid rgba(230,195,110,.2);
+  background:linear-gradient(180deg,rgba(201,162,39,.18),rgba(8,7,5,0))}
+footer .c{display:inline-flex;align-items:center;gap:6px}
+footer .c .c-ico{width:13px;height:13px}
+
+/* =========================================================
+   RESPONSIVO (mobile 390 conforme o modelo)
+   ========================================================= */
+@media (max-width:980px){
+  .container{width:min(var(--container),100% - 32px)}
+  .sec{padding:80px 0}
+  .sec-title{font-size:28px}
+  .sec-sub{font-size:15px}
+  .bg-full--desktop{display:none}
+  .bg-full--mobile{display:flex;justify-content:flex-end;align-items:center}
+  .bg-full>span{max-width:calc(100% - 32px);margin:16px}
+  .hero{min-height:0}
+  .hero .container{grid-template-columns:1fr;text-align:center;padding:36px 0 0;gap:0}
+  .hero-copy{max-width:360px;margin-inline:auto}
+  .hero h1{font-size:clamp(19px,7.6vw,34px);white-space:nowrap}
+  .hero-meta{justify-items:center;margin-top:14px;gap:3px}
+  .hero-space{min-height:300px}
+  .hero p{font-size:13px;line-height:1.3;margin-top:12px}
+  .hero-meta{font-size:10px}
+  .hero-meta li .mi{width:11px;height:11px}
+  .hero p br{display:none}
+  .hero .btn{margin-top:22px}
+  .hero .btn--lg{font-size:15px;padding:12px 30px}
+  .nav .container{height:58px}
+  .countdown{gap:8px;font-size:9px}
+  .digit span{font-size:12px;min-width:22px;padding:4px}
+  .nav .btn--sm{font-size:10px;padding:6px 12px}
+  .sec-doubt .card{grid-template-columns:1fr;padding:50px 28px 40px;text-align:center}
+  .sec-doubt .big{font-size:30px}
+  .grid-4{grid-template-columns:repeat(2,1fr);gap:14px}
+  .timeline::before{left:14px}
+  .timeline::after{left:14px}
+  .tl-item{width:calc(100% - 56px);margin-left:56px!important;padding:36px 22px 24px}
+  .tl-item .node{left:-49px!important;right:auto!important}
+  .tl-item .link{display:none}
+  .practice{grid-template-columns:1fr;padding:34px 24px;text-align:center}
+  .fit{grid-template-columns:1fr;gap:20px;max-width:360px;margin-inline:auto}
+  .receive{grid-template-columns:1fr;gap:30px}
+  .receive-space{min-height:380px}
+  .promise{grid-template-columns:1fr;max-width:340px;margin-inline:auto}
+  .faq{grid-template-columns:1fr;gap:0}
+  .ghost span{font-size:360px}
+}
+@media (max-width:520px){
+  .nav .logo{font-size:13px}
+  .nav .logo .ph--mark{width:18px;height:18px}
+  .countdown span.label{display:none}
+  .grid-4{grid-template-columns:repeat(2,1fr)}
+  .btn--lg{font-size:17px;padding:14px 28px}
+}
+/* ---- ajustes mobile (pós-revisão) ---- */
+@media (max-width:980px){
+  .sec-sub br{display:none}
+  .fit-card li{text-align:left}
+  .fit-card h3{text-align:center}
+}
+@media (max-width:520px){
+  .nav .container{gap:8px;height:54px}
+  .nav .logo{font-size:12px;gap:6px}
+  .countdown{gap:4px}
+  .countdown .digits{gap:3px}
+  .digit span{font-size:10px;min-width:18px;padding:3px 2px}
+  .digit small{font-size:5px}
+  .countdown .colon{font-size:11px;line-height:18px}
+  .nav .btn--sm{font-size:8px;padding:5px 8px;border-radius:5px}
+  .hero h1{font-size:clamp(19px,7.6vw,30px);line-height:1.06;letter-spacing:-.04em;white-space:nowrap}
+  .hero p{font-size:clamp(11px,3.4vw,13px)}
+  .sec-title{font-size:26px}
+  .sec-doubt .big{font-size:26px}
+  .sec-title br{display:none}
+}
+/* ---- LIQUID GLASS (cards escuros) ---- */
+.card{
+  border:1px solid transparent;border-radius:22px;
+  background:
+    radial-gradient(120% 70% at 0% 0%,rgba(255,255,255,.14),transparent 55%) padding-box,
+    linear-gradient(135deg,rgba(255,255,255,.09) 0%,rgba(255,255,255,.025) 45%,rgba(240,200,90,.05) 100%) padding-box,
+    linear-gradient(165deg,rgba(255,255,255,.6) 0%,rgba(255,255,255,.1) 28%,rgba(240,200,90,.12) 60%,rgba(240,200,90,.55) 100%) border-box;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.35),
+    inset 1px 0 0 rgba(255,255,255,.12),
+    inset 0 -1px 0 rgba(240,200,90,.3),
+    inset 0 -36px 56px -40px rgba(240,200,90,.16),
+    0 26px 60px rgba(0,0,0,.55);
+  backdrop-filter:blur(26px) saturate(160%);
+  -webkit-backdrop-filter:blur(26px) saturate(160%);
+}
+.card--glow::after{inset-inline:6%;height:60px;background:radial-gradient(50% 100% at 50% 100%,rgba(240,200,90,.22),transparent 70%)}
+.card--accent::before{box-shadow:0 0 14px rgba(240,200,90,.9),0 2px 6px rgba(0,0,0,.4)}
+.feat .ico,.tl-item .ico{color:#fff;filter:drop-shadow(0 0 6px rgba(240,200,90,.45))}
+.fit-card{box-shadow:inset 0 1px 0 rgba(255,255,255,.7),0 20px 50px rgba(0,0,0,.5)}
+.promise div{box-shadow:inset 0 1px 0 rgba(255,255,255,.6),0 14px 40px rgba(201,162,39,.35)}
+</style>
+</head>
+<body>
+
+<!-- ============ 2. HERO (fundo = arte completa do Photoshop; textos em HTML por cima) ============ -->
+<section class="hero">
+  <div class="ph bg-full bg-full--desktop"><span>Fundo do hero — desktop<small>Arte completa: fundo, pessoa/produto à direita, elementos gráficos. 1920×820 px (2x: 3840×1640). O texto da esquerda fica em HTML.</small></span></div>
+  <div class="ph bg-full bg-full--mobile"><span>Fundo do hero — mobile<small>Versão vertical: texto em cima (HTML), imagem embaixo. 390×700 px (2x: 780×1400)</small></span></div>
+  <div class="container">
+    <div class="hero-copy">
+      <h1><span class="l1">Headline principal</span><br>da página em três linhas<br><b>com destaque no final.</b></h1>
+      <p><em>Nome do produto</em> é o parágrafo de apoio que explica a oferta em duas ou três linhas, para quem é e o que resolve, com <em><b>trecho em destaque</b>, e fechamento.</em></p>
+      <ul class="hero-meta">
+        <li><svg class="mi" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" > <circle cx="12" cy="12" r="10" /> <path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20" /> <path d="M2 12h20" /> </svg>Informação rápida 1</li>
+        <li><svg class="mi" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" > <path d="M8 2v4" /> <path d="M16 2v4" /> <rect width="18" height="18" x="3" y="4" rx="2" /> <path d="M3 10h18" /> </svg>Informação rápida 2: data</li>
+        <li><svg class="mi" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" > <circle cx="12" cy="12" r="10" /> <polyline points="12 6 12 12 16 14" /> </svg>Informação rápida 3: horário</li>
+        <li><svg class="mi" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" > <path d="M8 2v4" /> <path d="M16 2v4" /> <rect width="18" height="18" x="3" y="4" rx="2" /> <path d="M3 10h18" /> <path d="m9 16 2 2 4-4" /> </svg>Informação rápida 4: data</li>
+      </ul>
+      <a class="btn btn--lg" href="#form"><em>Texto do botão</em> <b>Destaque</b></a>
+    </div>
+    <div class="hero-space" aria-hidden="true"></div>
+  </div>
+</section>
+
+<!-- ============ 3. MARQUEE ============ -->
+<div class="marquee" aria-hidden="true">
+  <div class="track">
+    <span>Frase da faixa <b>Marca</b></span><span>Frase da faixa <b>Marca</b></span><span>Frase da faixa <b>Marca</b></span><span>Frase da faixa <b>Marca</b></span><span>Frase da faixa <b>Marca</b></span><span>Frase da faixa <b>Marca</b></span><span>Frase da faixa <b>Marca</b></span><span>Frase da faixa <b>Marca</b></span>
+    <span>Frase da faixa <b>Marca</b></span><span>Frase da faixa <b>Marca</b></span><span>Frase da faixa <b>Marca</b></span><span>Frase da faixa <b>Marca</b></span><span>Frase da faixa <b>Marca</b></span><span>Frase da faixa <b>Marca</b></span><span>Frase da faixa <b>Marca</b></span><span>Frase da faixa <b>Marca</b></span>
+  </div>
+</div>
+
+<!-- ============ 4. O ANÚNCIO ESTÁ RODANDO ============ -->
+<section class="sec sec-doubt">
+  <div class="ghost"><span>B</span><span>G</span></div>
+  <div class="container center">
+    <h2 class="sec-title">Título da seção. <b>Gancho?</b> <br><span class="sec-sub" style="display:block;margin-top:4px">Subtítulo curto com <b>destaque.</b></span></h2>
+    <div class="card card--accent card--glow" style="text-align:left">
+      <div class="big">Frase curta um.<br>Frase curta dois.<br>Frase <b>três em destaque.</b></div>
+      <div class="small">
+        <p>Primeiro parágrafo de apoio com <b><em>trecho em destaque.</em></b></p>
+        <p>Segundo parágrafo de apoio, um pouco mais longo, com <b><em>trecho em destaque.</em></b></p>
+        <p>Frase de fechamento <em>em itálico</em> com <b><em>destaque final.</em></b></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 5. OPERAR COM CLAREZA ============ -->
+<section class="sec sec-clarity">
+  <div class="glow-band" style="top:-40px"></div>
+  <div class="container center">
+    <h2 class="sec-title">Título da seção <b>com destaque</b> no meio</h2>
+    <p class="sec-sub">Subtítulo de apoio em duas linhas que <br>explica a seção e termina <b>com destaque.</b></p>
+    <div class="grid-4" style="text-align:left">
+      <div class="card card--accent card--accent-left feat">
+        <svg class="ico" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" > <path d="M3 3v16a2 2 0 0 0 2 2h16" /> <path d="M18 17V9" /> <path d="M13 17V5" /> <path d="M8 17v-3" /> </svg>
+        <h3>Benefício 1<br>em duas linhas</h3>
+        <p>Descrição curta do benefício em até três linhas de texto.</p>
+      </div>
+      <div class="card card--accent card--accent-left feat">
+        <svg class="ico" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" > <path d="M12 16v5" /> <path d="M16 14v7" /> <path d="M20 10v11" /> <path d="m22 3-8.646 8.646a.5.5 0 0 1-.708 0L9.354 8.354a.5.5 0 0 0-.707 0L2 15" /> <path d="M4 18v3" /> <path d="M8 14v7" /> </svg>
+        <h3>Benefício 2<br>em duas linhas</h3>
+        <p>Descrição curta do benefício em até três linhas de texto.</p>
+      </div>
+      <div class="card card--accent card--accent-left feat">
+        <svg class="ico" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" > <path d="M12 5a3 3 0 1 0-5.997.125 4 4 0 0 0-2.526 5.77 4 4 0 0 0 .556 6.588A4 4 0 1 0 12 18Z" /> <path d="M12 5a3 3 0 1 1 5.997.125 4 4 0 0 1 2.526 5.77 4 4 0 0 1-.556 6.588A4 4 0 1 1 12 18Z" /> <path d="M15 13a4.5 4.5 0 0 1-3-4 4.5 4.5 0 0 1-3 4" /> <path d="M17.599 6.5a3 3 0 0 0 .399-1.375" /> <path d="M6.003 5.125A3 3 0 0 0 6.401 6.5" /> <path d="M3.477 10.896a4 4 0 0 1 .585-.396" /> <path d="M19.938 10.5a4 4 0 0 1 .585.396" /> <path d="M6 18a4 4 0 0 1-1.967-.516" /> <path d="M19.967 17.484A4 4 0 0 1 18 18" /> </svg>
+        <h3>Benefício 3<br>em duas linhas</h3>
+        <p>Descrição curta do benefício em até três linhas de texto.</p>
+      </div>
+      <div class="card card--accent card--accent-left feat">
+        <svg class="ico" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" > <line x1="10" x2="14" y1="2" y2="2" /> <line x1="12" x2="15" y1="14" y2="11" /> <circle cx="12" cy="14" r="8" /> </svg>
+        <h3>Benefício 4</h3>
+        <p>Descrição curta do benefício em até três linhas de texto.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 6. ESCALA NÃO É SORTE (timeline) ============ -->
+<section class="sec">
+  <div class="ghost"><span>B</span><span>G</span></div>
+  <div class="container center">
+    <h2 class="sec-title">Título da seção. <b>Destaque.</b></h2>
+    <p class="sec-sub">Subtítulo de apoio em duas linhas <br>explicando o processo.</p>
+    <div class="timeline" style="text-align:left">
+      <div class="card card--accent card--accent-left card--glow tl-item">
+        <svg class="ico" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" > <path d="M3 3v16a2 2 0 0 0 2 2h16" /> <path d="m19 9-5 5-4-4-3 3" /> </svg>
+        <h3>Etapa 1</h3>
+        <p>Descrição curta da etapa em até duas linhas de texto.</p>
+        <i class="link"></i><i class="node"></i>
+      </div>
+      <div class="card card--accent card--accent-left card--glow tl-item">
+        <svg class="ico" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" > <path d="m16.24 7.76-1.804 5.411a2 2 0 0 1-1.265 1.265L7.76 16.24l1.804-5.411a2 2 0 0 1 1.265-1.265z" /> <circle cx="12" cy="12" r="10" /> </svg>
+        <h3>Etapa 2</h3>
+        <p>Descrição curta da etapa em até duas linhas de texto.</p>
+        <i class="link"></i><i class="node"></i>
+      </div>
+      <div class="card card--accent card--accent-left card--glow tl-item">
+        <svg class="ico" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" > <path d="M13 17V9" /> <path d="M18 17V5" /> <path d="M3 3v16a2 2 0 0 0 2 2h16" /> <path d="M8 17v-3" /> </svg>
+        <h3>Etapa 3</h3>
+        <p>Descrição curta da etapa em até duas linhas de texto.</p>
+        <i class="link"></i><i class="node"></i>
+      </div>
+      <div class="card card--accent card--accent-left card--glow tl-item">
+        <svg class="ico" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" > <path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z" /> <path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z" /> <path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0" /> <path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5" /> </svg>
+        <h3>Etapa 4</h3>
+        <p>Descrição curta da etapa em até duas linhas de texto.</p>
+        <i class="link"></i><i class="node"></i>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 7. AQUI A TEORIA VIRA PRÁTICA ============ -->
+<section class="sec" style="padding-top:40px">
+  <div class="container center">
+    <h2 class="sec-title">Título da seção <b>com destaque!</b></h2>
+    <p class="sec-sub">Subtítulo de apoio com a segunda parte <b>em destaque, <br>ocupando duas linhas.</b></p>
+    <div class="card practice" style="text-align:left">
+      <ul>
+        <li><h3>Item 1 em<br>duas linhas</h3><p>Descrição curta do item em até duas linhas de texto.</p></li>
+        <li><h3>Item 2</h3><p>Descrição curta do item em até duas linhas de texto.</p></li>
+        <li><h3>Item 3</h3><p>Descrição curta do item em até duas linhas de texto.</p></li>
+      </ul>
+      <div class="ph">Imagem<small>Foto ou arte da seção (≈ 420×360)</small></div>
+    </div>
+    <div class="cta-row"><a class="btn btn--lg" href="#form"><em>Texto do botão</em> <b>Destaque</b></a></div>
+  </div>
+</section>
+
+<!-- ============ 8. ESSA MENTORIA NÃO É PARA TODO MUNDO ============ -->
+<section class="sec">
+  <div class="glow-band" style="top:-60px"></div>
+  <div class="container center">
+    <h2 class="sec-title">Título da seção em <br><b>duas linhas.</b></h2>
+    <div class="fit">
+      <div class="fit-card fit--no">
+        <h3>Título do card<br>negativo:</h3>
+        <ul>
+          <li><i><svg class="li-ico" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" > <path d="M18 6 6 18" /> <path d="m6 6 12 12" /> </svg></i>Item da lista 1.</li>
+          <li><i><svg class="li-ico" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" > <path d="M18 6 6 18" /> <path d="m6 6 12 12" /> </svg></i>Item da lista 2.</li>
+          <li><i><svg class="li-ico" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" > <path d="M18 6 6 18" /> <path d="m6 6 12 12" /> </svg></i>Item da lista 3.</li>
+          <li><i><svg class="li-ico" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" > <path d="M18 6 6 18" /> <path d="m6 6 12 12" /> </svg></i>Item da lista 4.</li>
+          <li><i><svg class="li-ico" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" > <path d="M18 6 6 18" /> <path d="m6 6 12 12" /> </svg></i>Item da lista 5.</li>
+          <li><i><svg class="li-ico" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" > <path d="M18 6 6 18" /> <path d="m6 6 12 12" /> </svg></i>Item da lista 6.</li>
+        </ul>
+      </div>
+      <div class="fit-card fit--yes">
+        <h3>Título do card<br>positivo:</h3>
+        <ul>
+          <li><i><svg class="li-ico" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" > <path d="M20 6 9 17l-5-5" /> </svg></i>Item da lista 1.</li>
+          <li><i><svg class="li-ico" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" > <path d="M20 6 9 17l-5-5" /> </svg></i>Item da lista 2.</li>
+          <li><i><svg class="li-ico" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" > <path d="M20 6 9 17l-5-5" /> </svg></i>Item da lista 3.</li>
+          <li><i><svg class="li-ico" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" > <path d="M20 6 9 17l-5-5" /> </svg></i>Item da lista 4.</li>
+          <li><i><svg class="li-ico" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" > <path d="M20 6 9 17l-5-5" /> </svg></i>Item da lista 5.</li>
+          <li><i><svg class="li-ico" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" > <path d="M20 6 9 17l-5-5" /> </svg></i>Item da lista 6.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 9. O QUE VOCÊ RECEBE (fundo = arte completa do Photoshop; título e cards em HTML) ============ -->
+<section class="sec receive-sec" style="padding-bottom:0">
+  <div class="ph bg-full bg-full--desktop"><span>Fundo da seção de entregas — desktop<small>Arte completa: pessoa/produto à direita, elementos gráficos. 1920×900 px (2x: 3840×1800). Título e os 4 cards ficam em HTML.</small></span></div>
+  <div class="ph bg-full bg-full--mobile"><span>Fundo da seção de entregas — mobile<small>Versão vertical: título e cards em cima (HTML), imagem embaixo. 390×1000 px (2x: 780×2000)</small></span></div>
+  <div class="container center" style="position:relative;z-index:1">
+    <h2 class="sec-title">Título da seção <br><b>com destaque.</b></h2>
+    <div class="receive" style="text-align:left">
+      <div class="grid-2">
+        <div class="card card--accent card--accent-left feat">
+          <svg class="ico" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" > <rect width="20" height="14" x="2" y="3" rx="2" /> <line x1="8" x2="16" y1="21" y2="21" /> <line x1="12" x2="12" y1="17" y2="21" /> </svg>
+          <h3>Entrega 1<br>em duas linhas</h3>
+          <p>Descrição curta da entrega em até três linhas.</p>
+        </div>
+        <div class="card card--accent card--accent-left feat">
+          <svg class="ico" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" > <path d="M12 16v5" /> <path d="M16 14v7" /> <path d="M20 10v11" /> <path d="m22 3-8.646 8.646a.5.5 0 0 1-.708 0L9.354 8.354a.5.5 0 0 0-.707 0L2 15" /> <path d="M4 18v3" /> <path d="M8 14v7" /> </svg>
+          <h3>Entrega 2<br>em duas linhas</h3>
+          <p>Descrição curta da entrega em até três linhas.</p>
+        </div>
+        <div class="card card--accent card--accent-left feat">
+          <svg class="ico" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" > <path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z" /> <path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z" /> <path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0" /> <path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5" /> </svg>
+          <h3>Entrega 3<br>em duas linhas</h3>
+          <p>Descrição curta da entrega em até três linhas.</p>
+        </div>
+        <div class="card card--accent card--accent-left feat">
+          <svg class="ico" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
+          <h3>Entrega 4<br>em duas linhas</h3>
+          <p>Descrição curta da entrega em até três linhas.</p>
+        </div>
+      </div>
+      <div class="receive-space" aria-hidden="true"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 10. MARQUEE ============ -->
+<div class="marquee" aria-hidden="true" style="margin-top:40px">
+  <div class="track">
+    <span>Frase da faixa <b>Marca</b></span><span>Frase da faixa <b>Marca</b></span><span>Frase da faixa <b>Marca</b></span><span>Frase da faixa <b>Marca</b></span><span>Frase da faixa <b>Marca</b></span><span>Frase da faixa <b>Marca</b></span><span>Frase da faixa <b>Marca</b></span><span>Frase da faixa <b>Marca</b></span>
+    <span>Frase da faixa <b>Marca</b></span><span>Frase da faixa <b>Marca</b></span><span>Frase da faixa <b>Marca</b></span><span>Frase da faixa <b>Marca</b></span><span>Frase da faixa <b>Marca</b></span><span>Frase da faixa <b>Marca</b></span><span>Frase da faixa <b>Marca</b></span><span>Frase da faixa <b>Marca</b></span>
+  </div>
+</div>
+
+<!-- ============ 11. PROMESSA ============ -->
+<section class="sec" id="form" style="padding-top:90px">
+  <div class="ghost"><span>B</span><span>G</span></div>
+  <div class="container center">
+    <h2 class="sec-title">Título da seção <b>com destaque.</b></h2>
+    <div class="promise">
+      <div>Texto curto do bloco 1, em três linhas, terminando <b>com destaque.</b></div>
+      <div><b>Pergunta em destaque?</b><br>Texto curto do bloco 2, em duas ou três linhas.</div>
+      <div>Texto curto do bloco 3, em três linhas, terminando <b>com destaque...</b></div>
+    </div>
+    <div class="cta-row"><a class="btn btn--lg" href="#"><em>Texto do botão</em> <b>Destaque</b></a></div>
+  </div>
+</section>
+
+<!-- ============ 12. FAQ ============ -->
+<section class="sec" style="padding-top:20px;padding-bottom:0">
+  <div class="container center">
+    <h2 class="sec-title"><b>Perguntas frequentes</b> sobre <br>o produto:</h2>
+    <div class="faq" style="text-align:left">
+      <div>
+        <details><summary><span>Pergunta frequente número 1?</span><svg class="chev" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" > <path d="m6 9 6 6 6-6" /> </svg></summary><p>Resposta genérica da pergunta.</p></details>
+        <details><summary><span>Pergunta frequente número 2?</span><svg class="chev" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" > <path d="m6 9 6 6 6-6" /> </svg></summary><p>Resposta genérica da pergunta.</p></details>
+        <details><summary><span>Pergunta frequente número 3?</span><svg class="chev" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" > <path d="m6 9 6 6 6-6" /> </svg></summary><p>Resposta genérica da pergunta.</p></details>
+        <details><summary><span>Pergunta frequente número 4?</span><svg class="chev" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" > <path d="m6 9 6 6 6-6" /> </svg></summary><p>Resposta genérica da pergunta.</p></details>
+        <details><summary><span>Pergunta frequente número 5?</span><svg class="chev" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" > <path d="m6 9 6 6 6-6" /> </svg></summary><p>Resposta genérica da pergunta.</p></details>
+      </div>
+      <div>
+        <details><summary><span>Pergunta frequente número 6?</span><svg class="chev" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" > <path d="m6 9 6 6 6-6" /> </svg></summary><p>Resposta genérica da pergunta.</p></details>
+        <details><summary><span>Pergunta frequente número 7?</span><svg class="chev" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" > <path d="m6 9 6 6 6-6" /> </svg></summary><p>Resposta genérica da pergunta.</p></details>
+        <details><summary><span>Pergunta frequente número 8?</span><svg class="chev" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" > <path d="m6 9 6 6 6-6" /> </svg></summary><p>Resposta genérica da pergunta.</p></details>
+        <details><summary><span>Pergunta frequente número 9?</span><svg class="chev" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" > <path d="m6 9 6 6 6-6" /> </svg></summary><p>Resposta genérica da pergunta.</p></details>
+        <details><summary><span>Pergunta frequente número 10?</span><svg class="chev" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" > <path d="m6 9 6 6 6-6" /> </svg></summary><p>Resposta genérica da pergunta.</p></details>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 13. FOOTER ============ -->
+<footer>
+  <span class="c"><svg class="c-ico" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" > <circle cx="12" cy="12" r="10" /> <path d="M14.83 14.83a4 4 0 1 1 0-5.66" /> </svg>Copyright 2025 - Nome da marca - Todos os direitos reservados.</span>
+</footer>
+
+
+<!-- Lenis: scroll suave (https://lenis.dev) -->
+<script src="https://unpkg.com/lenis@1.3.4/dist/lenis.min.js"></script>
+<script>
+  const lenis = new Lenis({
+    lerp: 0.08,          // suavidade (menor = mais "liquido")
+    wheelMultiplier: 1,
+    smoothWheel: true,
+    autoRaf: true
+  });
+  // âncoras (#form etc.) passam pelo Lenis
+  document.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', e => {
+      const id = a.getAttribute('href');
+      if (id.length > 1 && document.querySelector(id)) {
+        e.preventDefault();
+        lenis.scrollTo(id, { offset: -24, duration: 1.4 });
+      }
+    });
+  });
+  window.lenis = lenis;
+</script>
+</body>
+</html>
